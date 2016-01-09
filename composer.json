@@ -1,0 +1,27 @@
+{
+  "name": "MatthC/privileges",
+  "description": "Small Role-Permission integration for laravel",
+  "keywords": [
+    "laravel",
+    "roles",
+    "permissions"
+  ],
+  "homepage": "https://github.com/MatthC",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Matthieu MatthC",
+      "email": "matthieu.MatthC@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "MatthC\\Privileges\\": "src/"
+    }
+  }
+}
