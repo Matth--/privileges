@@ -5,6 +5,10 @@ This is a small role-permission integration for laravel projects. I know Entrust
 ##Installation
 Download the package into the vendor folder
 
+```
+composer require matthc/privileges
+```
+
 Add the Service Provider to config/app.php
 
 ```
