@@ -13,7 +13,7 @@ composer require matthc/privileges
 
 Add the Service Provider to config/app.php
 
-```
+```php
 ...
 MatthC\Privileges\PrivilegeServiceProvider::class,
 ...
@@ -45,7 +45,7 @@ $ php artisan privileges:db:users
 
 Add the trait to the usermodel
 
-```
+```php
 use MatthC\Privileges\Traits\PrivilegeUserTrait;
 
 class User extends Authenticatable
@@ -61,7 +61,7 @@ class User extends Authenticatable
 ###User has role
 To check if a user has a specific role:
 
-```
+```php
 //one role
 $user->hasRole('admin'); //returns true/false
 
@@ -76,7 +76,7 @@ $user->hasRole(['admin', 'author'], true);
 ###User has permission
 To check if a user has a specific permission:
 
-```
+```php
 //one permission
 $user->can('create_post');
 
@@ -90,7 +90,7 @@ $user->can(['create_post', 'update_post'], true);
 ##Middleware
 You can also use predefined middleware. Add the following lines to the route middleware array in app/Http/kernel.php
 
-```
+```php
 protected $routeMiddleware = [
         ...
         'role' => \MatthC\Privileges\Middleware\PrivilegeRoleMiddleware::class,
@@ -100,7 +100,7 @@ protected $routeMiddleware = [
 
 Example usage:
 
-```
+```php
 Route::group(['middleware' => ['role:admin']], function() {
     //add routes
 });
