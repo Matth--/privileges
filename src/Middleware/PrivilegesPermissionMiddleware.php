@@ -27,5 +27,4 @@ class PrivilegesPermissionMiddleware
 
         return $next($request);
     }
-
 }
