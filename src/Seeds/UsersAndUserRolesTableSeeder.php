@@ -4,7 +4,7 @@ namespace MatthC\Privileges\Seeds;
 
 use MatthC\Privileges\Models\Role;
 use Illuminate\Database\Seeder;
-use App\User;
+use App\Models\User;
 
 class UsersAndUserRolesTableSeeder extends Seeder
 {

@@ -3,6 +3,7 @@
 namespace MatthC\Privileges\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PrivilegesRoleMiddleware
@@ -16,7 +17,7 @@ class PrivilegesRoleMiddleware
      * @return mixed
      * @internal param null|string $guard
      */
-    public function handle($request, Closure $next, $roles)
+    public function handle(Request $request, Closure $next, $roles)
     {
         if(Auth::guest() || !$request->user()->hasRole(explode('|', $roles))) {
             abort(403);
