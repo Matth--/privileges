@@ -1,5 +1,7 @@
 #Privileges
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/37ded3db-b2ec-405b-b966-5d4b83fdc1fa/small.png)](https://insight.sensiolabs.com/projects/37ded3db-b2ec-405b-b966-5d4b83fdc1fa)
+
 This is a small role-permission integration for laravel projects. I know Entrust exists but i wanted to try it myself.
 
 ##Installation
