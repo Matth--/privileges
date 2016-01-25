@@ -18,10 +18,10 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = config('privileges.permissions');
 
-        foreach($permissions as $permission) {
+        foreach($permissions as $name => $description) {
             Permission::create([
-                'name' => $permission,
-                'description' => $permission . ' permission.',
+                'name' => $name,
+                'description' => $description,
             ]);
         }
     }

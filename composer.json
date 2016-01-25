@@ -18,6 +18,8 @@
     "php": ">=5.5.9"
   },
   "require-dev": {
+    "illuminate/support": "5.2.*",
+    "zizaco/entrust": "1.5.*"
   },
   "autoload": {
     "psr-4": {

@@ -20,9 +20,10 @@ return [
     | them like a normal model add (Permission::create([]);)
      */
     'permissions' => [
-        'create_post',
-        'update_post',
-        'delete_post',
+        'manage_users'          => 'User can manage users',
+        'manage_roles'          => 'User can manage roles',
+        'manage_permissions'    => 'user can manage permissions',
+        'manage_posts'          => 'User can manage blog posts',
     ],
 
     /*
@@ -31,9 +32,9 @@ return [
     | the permissions to the specific role.
      */
     'role_permission' => [
-        'admin' => ['create_post', 'update_post', 'delete_post'],
-        'author' => ['create_post', 'update_post', 'delete_post'],
-        'user' => [],
+        'admin'     => ['manage_users', 'manage_roles', 'manage_permissions'],
+        'author'    => [],
+        'user'      => [],
     ],
 
     /*
