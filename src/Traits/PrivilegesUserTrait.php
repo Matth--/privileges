@@ -82,7 +82,8 @@ trait PrivilegesUserTrait
      */
     public function cachedRoles()
     {
-        $cacheKey = 'priviliges_user_roles'.$this->primaryKey;
+        $primaryKeyName = $this->primaryKey;
+        $cacheKey = 'priviliges_user_roles'.$this->$primaryKeyName;
         return Cache::tags('user_roles')->remember($cacheKey, 60, function () {
             return $this->roles()->get();
         });

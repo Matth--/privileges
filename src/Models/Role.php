@@ -17,7 +17,8 @@ class Role extends Model
      */
     public function cachedPermissions()
     {
-        $cacheKey = 'priviliges_roles_permissions'.$this->primaryKey;
+        $primaryKeyName = $this->primaryKey;
+        $cacheKey = 'priviliges_roles_permissions'.$this->$primaryKeyName;
         return Cache::tags('roles_permissions')->remember($cacheKey, 60, function () {
             return $this->permissions()->get();
         });
