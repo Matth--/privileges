@@ -8,7 +8,6 @@ cache/
 /bootstrap/compiled.php
 /vendor
 composer.phar
-Thumbs.db
 
 /conf
 /.settings

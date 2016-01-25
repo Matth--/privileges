@@ -2,6 +2,7 @@
 
 namespace MatthC\Privileges\Traits;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use MatthC\Privileges\Models\Role;
@@ -49,9 +50,10 @@ trait PrivilegesUserTrait
     public function can($permission, $requireAll = false)
     {
         if(!is_array($permission)) {
-            foreach ($this->cachedRoles() as $role)
+            foreach ($this->cachedRoles() as $user_role)
             {
-                foreach ($role->cachedPermissions() as $perm)
+                $cachedPermissions = $user_role->cachedPermissions();
+                foreach ($cachedPermissions as $perm)
                 {
                     if (str_is( $permission, $perm->name) ) {
                         return true;
@@ -127,7 +129,7 @@ trait PrivilegesUserTrait
     public static function boot()
     {
         parent::boot();
-        static::deleting(function($user) {
+        static::deleting(function(User $user) {
             if (!method_exists(Config::get('auth.model'), 'bootSoftDeletes')) {
                 $user->roles()->sync([]);
             }

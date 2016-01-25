@@ -99,7 +99,7 @@ class Role extends Model
     public static function boot()
     {
         parent::boot();
-        static::deleting(function($role) {
+        static::deleting(function(Role $role) {
             if (!method_exists(Role::class, 'bootSoftDeletes')) {
                 $role->users()->sync([]);
                 $role->permissions()->sync([]);
