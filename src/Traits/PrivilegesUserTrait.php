@@ -34,8 +34,8 @@ trait PrivilegesUserTrait
                 } elseif (!$hasRole && $requireAll) {
                     return false;
                 }
-                return $requireAll;
             }
+            return $requireAll;
         }
         return false;
     }
