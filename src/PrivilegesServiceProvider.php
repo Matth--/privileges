@@ -33,6 +33,9 @@ class PrivilegesServiceProvider extends ServiceProvider
         $this->registerCommands();
     }
 
+    /**
+     * package specific Commands
+     */
     public function registerCommands()
     {
         $this->app->singleton('command.privileges.seeder', function ($app) {
