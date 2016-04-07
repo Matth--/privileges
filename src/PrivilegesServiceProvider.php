@@ -33,6 +33,7 @@ class PrivilegesServiceProvider extends ServiceProvider
         $this->registerCommands();
     }
 
+
     /**
      * package specific Commands
      */

@@ -2,12 +2,22 @@
 
 namespace MatthC\Privileges\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Role
+ * @package MatthC\Privileges\Models
+ *
+ * @author Matthieu Calie <matthieu.calie@gmail.com>
+ */
 class Role extends Model
 {
+    /**
+     * @var array
+     */
     protected $fillable = ['name', 'description'];
 
     /**
@@ -17,11 +27,16 @@ class Role extends Model
      */
     public function cachedPermissions()
     {
-        $primaryKeyName = $this->primaryKey;
-        $cacheKey = 'priviliges_roles_permissions'.$this->$primaryKeyName;
-        return Cache::tags('roles_permissions')->remember($cacheKey, 60, function () {
-            return $this->permissions()->get();
-        });
+        if(Cache::getStore() instanceof TaggableStore) {
+            $primaryKeyName = $this->primaryKey;
+
+            $cacheKey = 'priviliges_roles_permissions'.$this->$primaryKeyName;
+            return Cache::tags('roles_permissions')->remember($cacheKey, 60, function () {
+                return $this->permissions()->get();
+            });
+        }
+
+        return $this->permissions()->get();
     }
 
 
