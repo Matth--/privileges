@@ -6,6 +6,7 @@ use MatthC\Privileges\Models\Role;
 use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 /**
  * Class PrivilegesUserTrait
@@ -151,7 +152,7 @@ trait PrivilegesUserTrait
     public static function boot()
     {
         parent::boot();
-        static::deleting(function($user) {
+        static::deleting(function(Authenticatable $user) {
             if (!method_exists(Config::get('auth.model'), 'bootSoftDeletes')) {
                 $user->roles()->sync([]);
             }

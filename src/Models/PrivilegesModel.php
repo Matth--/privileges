@@ -2,8 +2,9 @@
 
 namespace MatthC\Privileges\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class PrivilegesModel
