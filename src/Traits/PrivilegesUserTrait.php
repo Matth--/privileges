@@ -2,13 +2,21 @@
 
 namespace MatthC\Privileges\Traits;
 
-use App\Models\User;
+use MatthC\Privileges\Models\Role;
+use Illuminate\Cache\TaggableStore;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use MatthC\Privileges\Models\Role;
 
+/**
+ * Class PrivilegesUserTrait
+ * @package MatthC\Privileges\Traits
+ *
+ * @author Matthieu Calie <matthieu.calie@gmail.com>
+ */
 trait PrivilegesUserTrait
 {
+    protected $cacheName = 'privileges_user_roles';
+
     /**
      * Check if a user has a certain Role
      *
@@ -82,11 +90,15 @@ trait PrivilegesUserTrait
      */
     public function cachedRoles()
     {
-        $primaryKeyName = $this->primaryKey;
-        $cacheKey = 'priviliges_user_roles'.$this->$primaryKeyName;
-        return Cache::tags('user_roles')->remember($cacheKey, 60, function () {
-            return $this->roles()->get();
-        });
+        if(Cache::getStore() instanceof TaggableStore) {
+            $primaryKeyName = $this->primaryKey;
+            $cacheKey = 'roles_for_user'.$this->$primaryKeyName;
+            return Cache::tags($this->cacheName)->remember($cacheKey, 60, function () {
+                return $this->roles()->get();
+            });
+        }
+
+        return $this->roles()->get();
     }
 
     /**
@@ -95,9 +107,12 @@ trait PrivilegesUserTrait
      * @param array $options
      */
     public function save(array $options = [])
-    {   //both inserts and updates
+    {
         parent::save($options);
-        Cache::tags('user_roles')->flush();
+
+        if(Cache::getStore() instanceof TaggableStore) {
+            Cache::tags($this->cacheName)->flush();
+        }
     }
 
     /**
@@ -108,7 +123,10 @@ trait PrivilegesUserTrait
     public function delete(array $options = [])
     {
         parent::delete($options);
-        Cache::tags('user_roles')->flush();
+
+        if(Cache::getStore() instanceof TaggableStore) {
+            Cache::tags($this->cacheName)->flush();
+        }
     }
 
     /**
@@ -118,7 +136,10 @@ trait PrivilegesUserTrait
     public function restore()
     {
         parent::restore();
-        Cache::tags('user_roles')->flush();
+
+        if(Cache::getStore() instanceof TaggableStore) {
+            Cache::tags($this->cacheName)->flush();
+        }
     }
 
     /**
@@ -130,12 +151,70 @@ trait PrivilegesUserTrait
     public static function boot()
     {
         parent::boot();
-        static::deleting(function(User $user) {
+        static::deleting(function($user) {
             if (!method_exists(Config::get('auth.model'), 'bootSoftDeletes')) {
                 $user->roles()->sync([]);
             }
             return true;
         });
+    }
+
+    /**
+     * Attach a Role
+     *
+     * @param mixed $role
+     */
+    public function attachRole($role)
+    {
+        if(is_object($role)) {
+            $role = $role->getKey();
+        }
+        if(is_array($role)) {
+            $role = $role['id'];
+        }
+        $this->roles()->attach($role);
+    }
+
+    /**
+     * Detach a Role
+     *
+     * @param mixed $role
+     */
+    public function detachRole($role)
+    {
+        if (is_object($role)) {
+            $role = $role->getKey();
+        }
+        if (is_array($role)) {
+            $role = $role['id'];
+        }
+        $this->roles()->detach($role);
+    }
+
+    /**
+     * Attach multiple roles
+     *
+     * @param mixed $roles
+     */
+    public function attachRoles($roles)
+    {
+        foreach ($roles as $role) {
+            $this->attachRole($role);
+        }
+    }
+
+    /**
+     * Detach multiple roles
+     *
+     * @param mixed $roles
+     */
+    public function detachRoles($roles = null)
+    {
+        if (!$roles) $roles = $this->roles()->get();
+
+        foreach ($roles as $role) {
+            $this->detachRole($role);
+        }
     }
 
     /**

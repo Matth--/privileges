@@ -2,9 +2,13 @@
 
 namespace MatthC\Privileges\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Permission extends Model
+/**
+ * Class Permission
+ * @package MatthC\Privileges\Models
+ *
+ * @author Matthieu Calie <matthieu.calie@gmail.com>
+ */
+class Permission extends PrivilegesModel
 {
     /**
      * @var array
