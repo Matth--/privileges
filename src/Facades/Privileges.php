@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Facade;
  * Class PrivilegesFacade
  * @package MatthC\Privileges
  *
- * @author Matthieu Calie <matthieu.calie@wijs.be>
+ * @author Matthieu Calie <matthieu.calie@gmail.com>
  */
 class Privileges extends Facade
 {
