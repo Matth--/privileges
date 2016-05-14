@@ -2,13 +2,27 @@
 
 namespace MatthC\Privileges\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use MatthC\Privileges\Contracts\RoleInterface;
 
-class Role extends Model
+/**
+ * Class Role
+ * @package MatthC\Privileges\Models
+ *
+ * @author Matthieu Calie <matthieu.calie@gmail.com>
+ */
+class Role extends PrivilegesModel implements RoleInterface
 {
+    /**
+     * @var array
+     */
     protected $fillable = ['name', 'description'];
+
+    /**
+     * @var string
+     */
+    protected $cacheName = 'privileges_role_permissions';
 
     /**
      * Cache the roles
@@ -17,11 +31,16 @@ class Role extends Model
      */
     public function cachedPermissions()
     {
-        $primaryKeyName = $this->primaryKey;
-        $cacheKey = 'priviliges_roles_permissions'.$this->$primaryKeyName;
-        return Cache::tags('roles_permissions')->remember($cacheKey, 60, function () {
-            return $this->permissions()->get();
-        });
+        if($this->isTagCacheAllowed()) {
+            $primaryKeyName = $this->primaryKey;
+
+            $cacheKey = 'permissions_for_role'.$this->$primaryKeyName;
+            return Cache::tags($this->cacheName)->remember($cacheKey, 60, function () {
+                return $this->permissions()->get();
+            });
+        }
+
+        return $this->permissions()->get();
     }
 
 
@@ -63,9 +82,13 @@ class Role extends Model
      * @return bool|void
      */
     public function save(array $options = [])
-    {   //both inserts and updates
-        parent::save($options);
-        Cache::tags('roles_permissions')->flush();
+    {
+        if(!parent::save($options)) {
+            return false;
+        }
+
+        $this->flushCache();
+        return true;
     }
 
     /**
@@ -76,8 +99,12 @@ class Role extends Model
      */
     public function delete(array $options = [])
     {
-        parent::delete($options);
-        Cache::tags('roles_permissions')->flush();
+        if(!parent::delete($options)) {
+            return false;
+        }
+        
+        $this->flushCache();
+        return true;
     }
 
     /**
@@ -86,8 +113,80 @@ class Role extends Model
      */
     public function restore()
     {
-        parent::restore();
-        Cache::tags('roles_permissions')->flush();
+        if(!parent::restore()) {
+            return false;
+        }
+
+        $this->flushCache();
+        return true;
+    }
+
+    /**
+     * Attach al the permissions or detach all the currently attached ones
+     *
+     * @param mixed $permissions
+     */
+    public function savePermissions($permissions)
+    {
+        if(!empty($permissions)) {
+            $this->permissions()->sync($permissions);
+        } else {
+            $this->permissions()->detach();
+        }
+    }
+
+    /**
+     * Attach a permission
+     *
+     * @param $permission
+     */
+    public function attachPermission($permission)
+    {
+        if (is_object($permission)) {
+            $permission = $permission->getKey();
+        }
+        if (is_array($permission)) {
+            $permission = $permission['id'];
+        }
+        $this->permissions()->attach($permission);
+    }
+
+    /**
+     * Detach a permission
+     *
+     * @param $permission
+     */
+    public function detachPermission($permission)
+    {
+        if (is_object($permission))
+            $permission = $permission->getKey();
+        if (is_array($permission))
+            $permission = $permission['id'];
+        $this->perms()->detach($permission);
+    }
+
+    /**
+     * Attach multiple permissions
+     *
+     * @param $permissions
+     */
+    public function attachPermissions($permissions)
+    {
+        foreach($permissions as $permission) {
+            $this->attachPermission($permission);
+        }
+    }
+
+    /**
+     * Detach multiple permissions
+     *
+     * @param $permissions
+     */
+    public function detachPermissions($permissions)
+    {
+        foreach($permissions as $permission) {
+            $this->detachPermission($permission);
+        }
     }
 
     /**

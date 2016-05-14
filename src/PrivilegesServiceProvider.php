@@ -30,8 +30,13 @@ class PrivilegesServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind('privileges', function ($app) {
+            return new Privileges($app);
+        });
+
         $this->registerCommands();
     }
+
 
     /**
      * package specific Commands
